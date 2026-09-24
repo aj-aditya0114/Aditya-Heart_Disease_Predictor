@@ -1,11 +1,14 @@
 import streamlit as st
 import pandas as pd
 import joblib
+from pathlib import Path
 
 # Load saved model, scaler, and expected columns
-model = joblib.load("knn_heart_model.pkl")
-scaler = joblib.load("heart_scaler.pkl")
-expected_columns = joblib.load("heart_columns.pkl")
+BASE_DIR = Path(__file__).resolve().parent
+
+model = joblib.load(BASE_DIR / "KNN_heart_model.pkl")
+scaler = joblib.load(BASE_DIR / "heart_scaler.pkl")
+columns = joblib.load(BASE_DIR / "heart_columns.pkl")
 
 st.title("Heart Stroke Prediction by ADITYA")
 st.markdown("Provide the following details to check your heart stroke risk:")
@@ -45,12 +48,12 @@ if st.button("Predict"):
     input_df = pd.DataFrame([raw_input])
 
     # Fill in missing columns with 0s
-    for col in expected_columns:
+    for col in columns:
         if col not in input_df.columns:
             input_df[col] = 0
 
     # Reorder columns
-    input_df = input_df[expected_columns]
+    input_df = input_df[columns]
 
     # Scale the input
     scaled_input = scaler.transform(input_df)
